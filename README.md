@@ -124,4 +124,5 @@ Subscribe to [ruby-security-ann](https://groups.google.com/forum/#!forum/ruby-se
 - [Rails’ Insecure Defaults](https://codeclimate.com/blog/rails-insecure-defaults/)
 - [The Inadequate Guide to Rails Security](https://blog.honeybadger.io/ruby-security-tutorial-and-rails-security-guide/)
 - [The Matasano Crypto Challenges](https://cryptopals.com/)
+- [Web Application Security Zone by Netsparker](https://www.netsparker.com/blog/web-security/)
 
