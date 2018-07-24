@@ -65,9 +65,7 @@ Everyone writing code must be responsible for security. :lock:
 
 - Use a trusted library like [Devise](https://github.com/plataformatec/devise) for authentication (see [Hardening Devise](https://github.com/ankane/shorts/blob/master/Hardening-Devise.md) if applicable)
 
-- Notify users of password changes
-
-- Notify users of email address changes - send an email to both the old and new address
+- Notify users of password changes, notify users of email address changes - send an email to both the old and new address
 
 - Rate limit login attempts with [Rack Attack](https://github.com/kickstarter/rack-attack)
 
@@ -85,7 +83,7 @@ Everyone writing code must be responsible for security. :lock:
 
 ## Open Source Tools
 
-- [Brakeman](https://github.com/presidentbeef/brakeman) is a great static analysis tool - it scans your code for vulnerabilities
+- [Brakeman](https://github.com/presidentbeef/brakeman) is a great static analysis tool - it scans your code for vulnerabilities, [please check out what all common security issues are covered by brakeman](https://github.com/presidentbeef/brakeman/tree/master/docs/warning_types)
 - [bundler-audit](https://github.com/rubysec/bundler-audit) checks for vulnerable versions of gems
 
   ```sh
