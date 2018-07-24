@@ -18,10 +18,10 @@ Everyone writing code must be responsible for security. :lock:
 
 - Set `autocomplete="off"` for sensitive form fields, like credit card number
 
-- Make sure sensitive request parameters aren’t logged
+- Make sure sensitive request parameters are not logged
 
   ```ruby
-  Rails.application.config.filter_parameters += [:credit_card_number]
+  Rails.application.config.filter_parameters += [:credit_card_number, :password, :username, :login]
   ```
 
 - Protect sensitive data at rest with a library like [attr_encrypted](https://github.com/attr-encrypted/attr_encrypted) and possibly [KMS Encrypted](https://github.com/ankane/kms_encrypted). Further if necessary, keep rotating the keys/hash/salts used for encryption, keep track of latest encryption algorithms and their implementation libraries 
@@ -63,8 +63,6 @@ Everyone writing code must be responsible for security. :lock:
   config.ssl_options = {hsts: {subdomains: true, preload: true, expires: 1.year}}
   ```
 
-- Use a trusted library like [Devise](https://github.com/plataformatec/devise) for authentication (see [Hardening Devise](https://github.com/ankane/shorts/blob/master/Hardening-Devise.md) if applicable)
-
 - Notify users of password changes, notify users of email address changes - send an email to both the old and new address
 
 - Rate limit login attempts with [Rack Attack](https://github.com/kickstarter/rack-attack)
@@ -79,7 +77,6 @@ Everyone writing code must be responsible for security. :lock:
 
 - [Be careful](https://product.reverb.com/2015/08/29/stay-safe-while-using-html_safe-in-rails/) with `html_safe`
 
-- If you still use `attr_accessible`, [upgrade to strong_parameters](https://github.com/ankane/shorts/blob/master/Strong-Parameters.md)
 
 ## Open Source Tools
 
