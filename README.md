@@ -4,7 +4,7 @@ Everyone writing code must be responsible for security. :lock:
 
 - Start with the [Rails Security Guide](http://guides.rubyonrails.org/security.html) to see how Rails protects you.
 
-- 1. Identify various application specific config variables, secret tokens, passwords, credentials etc and store them in a location that exist as long as application is running, or keep them served using any service, with Rails 5.1 one can have encrypted secrets file, read more about it [here](https://www.google.co.in/search?q=rails+secrets+encrypted) and [here](https://www.google.co.in/search?q=rails+secrets+encrypted)
+- Identify various application specific config variables, secret tokens, passwords, credentials etc and store them in a location that exist as long as application is running, or keep them served using any service, with Rails 5.1 one can have encrypted secrets file, read more about this [here](https://www.google.co.in/search?q=rails+secrets+encrypted) and [here](https://www.google.co.in/search?q=rails+secrets+encrypted)
 
 - Even with ActiveRecord, SQL injection is still possible if misused
 
