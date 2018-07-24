@@ -14,7 +14,7 @@ Everyone writing code must be responsible for security. :lock:
 
   is vulnerable to injection. [Learn about other methods](https://rails-sqli.org)
 
-- Sanitize the data/text/json that is being rendered. [Be careful](https://product.reverb.com/2015/08/29/stay-safe-while-using-html_safe-in-rails/) with `html_safe`
+- Sanitize the data/text/html/json that is getting rendered. [Be careful](https://product.reverb.com/2015/08/29/stay-safe-while-using-html_safe-in-rails/) with `html_safe`
 
 - Use `json_escape` when passing variables to JavaScript, or better yet, a library like [Gon](https://github.com/gazay/gon)
 
