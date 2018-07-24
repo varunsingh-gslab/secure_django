@@ -1,4 +1,4 @@
-# Secure Rails
+# Securing Rails Application for Developers
 
 Everyone writing code must be responsible for security. :lock:
 
