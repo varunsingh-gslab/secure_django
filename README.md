@@ -6,7 +6,7 @@ Start with the [Rails Security Guide](http://guides.rubyonrails.org/security.htm
 
 ## Best Practices
 
-- Keep secret tokens out of your code - `ENV` variables are a good practice
+- Keep secret tokens out of your code, make use of secrets.yml or [figaro](https://github.com/laserlemon/figaro)
 
 - Even with ActiveRecord, SQL injection is still possible if misused
 
@@ -15,6 +15,39 @@ Start with the [Rails Security Guide](http://guides.rubyonrails.org/security.htm
   ```
 
   is vulnerable to injection. [Learn about other methods](https://rails-sqli.org)
+
+- Log all successful and failed login attempts and password reset attempts (check out [Authtrail](https://github.com/ankane/authtrail) if you use Devise)
+
+- Set `autocomplete="off"` for sensitive form fields, like credit card number
+
+- Make sure sensitive request parameters aren’t logged
+
+  ```ruby
+  Rails.application.config.filter_parameters += [:credit_card_number]
+  ```
+
+- Protect sensitive data at rest with a library like [attr_encrypted](https://github.com/attr-encrypted/attr_encrypted) and possibly [KMS Encrypted](https://github.com/ankane/kms_encrypted). Further if necessary, keep rotating the keys/hash/salts used for encryption, keep track of latest encryption algorithms and their implementation libraries 
+
+- Ask search engines not to index pages with secret tokens in the URL
+
+  ```html
+  <meta name="robots" content="noindex, nofollow">
+  ```
+
+- Ask the browser [not to cache pages](https://stackoverflow.com/a/748646) with sensitive information
+
+  ```ruby
+  response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+  response.headers["Pragma"] = "no-cache"
+  response.headers["Expires"] = "Sat, 01 Jan 2000 00:00:00 GMT"
+  ```
+
+- Prevent [host header injection](http://carlos.bueno.org/2008/06/host-header-injection.html) - add the following to `config/environments/production.rb`
+
+  ```ruby
+  config.action_controller.default_url_options = {host: "www.yoursite.com"}
+  config.action_controller.asset_host = "www.yoursite.com"
+  ```
 
 - Use [SecureHeaders](https://github.com/twitter/secureheaders)
 
@@ -32,23 +65,6 @@ Start with the [Rails Security Guide](http://guides.rubyonrails.org/security.htm
   config.ssl_options = {hsts: {subdomains: true, preload: true, expires: 1.year}}
   ```
 
-- Protect sensitive data at rest with a library like [attr_encrypted](https://github.com/attr-encrypted/attr_encrypted) and possibly [KMS Encrypted](https://github.com/ankane/kms_encrypted)
-
-- Prevent [host header injection](http://carlos.bueno.org/2008/06/host-header-injection.html) - add the following to `config/environments/production.rb`
-
-  ```ruby
-  config.action_controller.default_url_options = {host: "www.yoursite.com"}
-  config.action_controller.asset_host = "www.yoursite.com"
-  ```
-
-- Set `autocomplete="off"` for sensitive form fields, like credit card number
-
-- Make sure sensitive request parameters aren’t logged
-
-  ```ruby
-  Rails.application.config.filter_parameters += [:credit_card_number]
-  ```
-
 - Use a trusted library like [Devise](https://github.com/plataformatec/devise) for authentication (see [Hardening Devise](https://github.com/ankane/shorts/blob/master/Hardening-Devise.md) if applicable)
 
 - Notify users of password changes
@@ -56,24 +72,6 @@ Start with the [Rails Security Guide](http://guides.rubyonrails.org/security.htm
 - Notify users of email address changes - send an email to both the old and new address
 
 - Rate limit login attempts with [Rack Attack](https://github.com/kickstarter/rack-attack)
-
-- Log all successful and failed login attempts and password reset attempts (check out [Authtrail](https://github.com/ankane/authtrail) if you use Devise)
-
-- Rails has a number of gems for [authorization](https://www.ruby-toolbox.com/categories/rails_authorization) - we like [Pundit](https://github.com/elabs/pundit)
-
-- Ask search engines not to index pages with secret tokens in the URL
-
-  ```html
-  <meta name="robots" content="noindex, nofollow">
-  ```
-
-- Ask the browser [not to cache pages](https://stackoverflow.com/a/748646) with sensitive information
-
-  ```ruby
-  response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
-  response.headers["Pragma"] = "no-cache"
-  response.headers["Expires"] = "Sat, 01 Jan 2000 00:00:00 GMT"
-  ```
 
 - Use `json_escape` when passing variables to JavaScript, or better yet, a library like [Gon](https://github.com/gazay/gon)
 
