@@ -1,10 +1,8 @@
-# Securing Rails Application for Developers
+# Rails security best practices for developers
 
 Everyone writing code must be responsible for security. :lock:
 
-Start with the [Rails Security Guide](http://guides.rubyonrails.org/security.html) to see how Rails protects you.
-
-## Best Practices
+- Start with the [Rails Security Guide](http://guides.rubyonrails.org/security.html) to see how Rails protects you.
 
 - Keep secret tokens out of your code, make use of secrets.yml or [figaro](https://github.com/laserlemon/figaro)
 
