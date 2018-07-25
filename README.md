@@ -46,7 +46,7 @@ Everyone writing code must be responsible for security. :lock:
 
 - Protect sensitive data at rest with a library like [attr_encrypted](https://github.com/attr-encrypted/attr_encrypted) and possibly [KMS Encrypted](https://github.com/ankane/kms_encrypted). Further if necessary, keep rotating the keys/hash/salts used for encryption, keep track of latest encryption algorithms and their implementation libraries 
 
-- Don't install development/test-related gems such as [better_errors](https://github.com/charliesome/better_errors) and [web-console](https://github.com/rails/web-console) in the production environment. Place them within a group :development, :test do block in the Gemfile. Prevents leakage of exceptions and even REPL access if using better_errors + web-console
+- Don't install development/test-related gems such as [better_errors](https://github.com/charliesome/better_errors) and [web-console](https://github.com/rails/web-console) in the production environment. Place them within a group `:development, :test do block` in the Gemfile. Prevents leakage of exceptions and even REPL access if using better_errors + web-console
 
 - Ask search engines not to index pages with secret tokens in the URL
 
