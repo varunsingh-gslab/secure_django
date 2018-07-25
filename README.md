@@ -95,6 +95,8 @@ Everyone writing code must be responsible for security. :lock:
 
 - Rate limit login attempts with [Rack Attack](https://github.com/kickstarter/rack-attack)
 
+- You might be a busy person. Security is not a very visible feature in most applications, and so sometimes it’s not a priority. Of course you know it’s important, but how can you fit it into your busy schedule? The answer may be in the power of habits, especially [mini habits](https://www.airpair.com/ruby-on-rails/posts/a-week-with-a-rails-security-strategy)
+
 
 
 ## Open Source Tools
@@ -148,5 +150,4 @@ Subscribe to [ruby-security-ann](https://groups.google.com/forum/#!forum/ruby-se
 - [OWASP Top10 2017](https://www.owasp.org/index.php/Category:OWASP_Top_Ten_2017_Project)
 - [zen-rails-security-checklist](https://github.com/amolpujari/zen-rails-security-checklist)
 - [Build Secure Applications](https://blog.sqreen.io/best-practices-build-secure-applications/)
-- [A week with a Rails Security Strategy: More security, new habits](https://www.airpair.com/ruby-on-rails/posts/a-week-with-a-rails-security-strategy)
 
