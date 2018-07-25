@@ -52,7 +52,7 @@ Everyone writing code must be responsible for security. :lock:
 
 - Don't install development/test-related gems such as [better_errors](https://github.com/charliesome/better_errors) and [web-console](https://github.com/rails/web-console) in the production environment. Place them within a group `:development, :test do block` in the Gemfile. Prevents leakage of exceptions and even REPL access if using better_errors + web-console
 
-- Avoid exposing numerical/sequential record IDs in URLs, form HTML source and APIs. Consider using slugs (A.K.A. friendly IDs, vanity URLs) to identify records instead of numerical IDs, as implemented by the friendly_id gem. Additional benefits include SEO and better-looking URLs
+- Avoid exposing numerical/sequential record IDs in URLs, form HTML source and APIs. Consider using slugs (A.K.A. friendly IDs, vanity URLs) to identify records instead of numerical IDs, as implemented by the [friendly_id](https://github.com/norman/friendly_id) gem. Additional benefits include SEO and better-looking URLs
 
 - When using slugs instead of numerical IDs for URLs, consider returning a `404 Not Found` status code instead of `403 Forbidden` for authorization errors. Prevents leakage of attribute values used to generate the slugs. For instance, visiting `www.myapp.com/users/john-doe` and getting a `403` return status indicates the application has a user named John Doe.*
 
