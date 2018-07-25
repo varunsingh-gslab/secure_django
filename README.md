@@ -48,6 +48,8 @@ Everyone writing code must be responsible for security. :lock:
 
 - Don't install development/test-related gems such as [better_errors](https://github.com/charliesome/better_errors) and [web-console](https://github.com/rails/web-console) in the production environment. Place them within a group `:development, :test do block` in the Gemfile. Prevents leakage of exceptions and even REPL access if using better_errors + web-console
 
+- When using slugs instead of numerical IDs for URLs, consider returning a `404 Not Found` status code instead of `403 Forbidden` for authorization errors. Prevents leakage of attribute values used to generate the slugs. For instance, visiting `www.myapp.com/users/john-doe` and getting a `403` return status indicates the application has a user named John Doe.*
+
 - Ask search engines not to index pages with secret tokens in the URL
 
   ```html
