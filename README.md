@@ -14,6 +14,10 @@ Everyone writing code must be responsible for security. :lock:
 
   is vulnerable to injection. [Learn about other methods](https://rails-sqli.org)
 
+- Don’t use standard Ruby interpolation (`#{foo}`) to insert user inputted strings into ActiveRecord or raw SQL queries. Use the `?` character, named bind variables or the [ActiveRecord::Sanitization methods](http://api.rubyonrails.org/classes/ActiveRecord/Sanitization/ClassMethods.html#method-i-sanitize_conditions) to sanitize user input used in DB queries
+
+-  Don't pass user inputted strings to methods capable of evaluating code or running O.S. commands such as `eval`, `system`, `syscall`, `%x()`, `open`, `popen<n>`, `File.read`, `File.write`, `send`, `to_sym` and `exec`
+
 - Sanitize the data/text/html/json that is getting rendered. [Be careful](https://product.reverb.com/2015/08/29/stay-safe-while-using-html_safe-in-rails/) with `html_safe`
 
 - Use `json_escape` when passing variables to JavaScript, or better yet, a library like [Gon](https://github.com/gazay/gon)
