@@ -148,5 +148,5 @@ Subscribe to [ruby-security-ann](https://groups.google.com/forum/#!forum/ruby-se
 - [OWASP Top10 2017](https://www.owasp.org/index.php/Category:OWASP_Top_Ten_2017_Project)
 - [zen-rails-security-checklist](https://github.com/amolpujari/zen-rails-security-checklist)
 - [Build Secure Applications](https://blog.sqreen.io/best-practices-build-secure-applications/)
-- [Security issues solutions in RoR](https://syndicode.com/2017/10/23/security-issues-solutions-in-ror/)
+- [A week with a Rails Security Strategy: More security, new habits](https://www.airpair.com/ruby-on-rails/posts/a-week-with-a-rails-security-strategy)
 
