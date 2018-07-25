@@ -127,4 +127,5 @@ Subscribe to [ruby-security-ann](https://groups.google.com/forum/#!forum/ruby-se
 - [The Matasano Crypto Challenges](https://cryptopals.com/)
 - [Web Application Security Zone by Netsparker](https://www.netsparker.com/blog/web-security/)
 - [VERACODE: RUBY ON RAILS SECURITY](https://www.veracode.com/security/ruby-security)
+- [OWASP Top10 2017](https://www.owasp.org/index.php/Category:OWASP_Top_Ten_2017_Project)
 
