@@ -36,11 +36,17 @@ Everyone writing code must be responsible for security. :lock:
   Rails.application.config.filter_parameters += [:credit_card_number, :password, :username, :login]
   ```
 
+- Avoid rolling your own authentication unless you know exactly what you are doing. Consider using a gem such as [Devise](https://github.com/plataformatec/devise), [Authlogic](https://github.com/binarylogic/authlogic) or [Clearance](https://github.com/thoughtbot/clearance)
+
+- Expire the session at log out and expire old sessions at every successful login, consider limiting the number of simultaneous sessions per account
+
 - Log all successful and failed login attempts and password reset attempts (check out [Authtrail](https://github.com/ankane/authtrail) if you use Devise)
 
 - Notify users of password changes, notify users of email address changes - send an email to both the old and new address
 
 - Protect sensitive data at rest with a library like [attr_encrypted](https://github.com/attr-encrypted/attr_encrypted) and possibly [KMS Encrypted](https://github.com/ankane/kms_encrypted). Further if necessary, keep rotating the keys/hash/salts used for encryption, keep track of latest encryption algorithms and their implementation libraries 
+
+- Don't install development/test-related gems such as [better_errors](https://github.com/charliesome/better_errors) and [web-console](https://github.com/rails/web-console) in the production environment. Place them within a group :development, :test do block in the Gemfile. Prevents leakage of exceptions and even REPL access if using better_errors + web-console
 
 - Ask search engines not to index pages with secret tokens in the URL
 
@@ -132,4 +138,5 @@ Subscribe to [ruby-security-ann](https://groups.google.com/forum/#!forum/ruby-se
 - [Web Application Security Zone by Netsparker](https://www.netsparker.com/blog/web-security/)
 - [VERACODE: RUBY ON RAILS SECURITY](https://www.veracode.com/security/ruby-security)
 - [OWASP Top10 2017](https://www.owasp.org/index.php/Category:OWASP_Top_Ten_2017_Project)
+- [zen-rails-security-checklist](https://github.com/amolpujari/zen-rails-security-checklist)
 
