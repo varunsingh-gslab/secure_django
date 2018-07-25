@@ -145,4 +145,5 @@ Subscribe to [ruby-security-ann](https://groups.google.com/forum/#!forum/ruby-se
 - [VERACODE: RUBY ON RAILS SECURITY](https://www.veracode.com/security/ruby-security)
 - [OWASP Top10 2017](https://www.owasp.org/index.php/Category:OWASP_Top_Ten_2017_Project)
 - [zen-rails-security-checklist](https://github.com/amolpujari/zen-rails-security-checklist)
+- [Build Secure Applications](https://blog.sqreen.io/best-practices-build-secure-applications/)
 
