@@ -44,6 +44,8 @@ Everyone writing code must be responsible for security. :lock:
 
 - Implement Captcha or Negative Captcha on publicly exposed forms
 
+- Encrypt cookies even if an SSL connection is used. This way, an attacker will not be able to view or modify cookies even if they are intercepted, and the user will not be able to read and edit cookies in the browser
+
 - Notify users of password changes, notify users of email address changes - send an email to both the old and new address
 
 - Protect sensitive data at rest with a library like [attr_encrypted](https://github.com/attr-encrypted/attr_encrypted) and possibly [KMS Encrypted](https://github.com/ankane/kms_encrypted). Further if necessary, keep rotating the keys/hash/salts used for encryption, keep track of latest encryption algorithms and their implementation libraries 
