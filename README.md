@@ -1,153 +1,106 @@
-# Rails security best practices for developers
+# Django security
 
-Everyone writing code must be responsible for security. :lock:
+Everyone writing code must be responsible for security. 🔒  
 
-- Start with the [Rails Security Guide](http://guides.rubyonrails.org/security.html) to see how Rails protects you.
 
-- Identify various application specific config variables, secret tokens, passwords, credentials etc and store them in a location that exist as long as application is running, or keep them served using any service, with Rails 5.1 one can have encrypted secrets file, read more about this [here](https://www.google.co.in/search?q=rails+secrets+encrypted) and [here](https://medium.com/poka-techblog/the-best-way-to-store-secrets-in-your-app-is-not-to-store-secrets-in-your-app-308a6807d3ed)
+  * Start with the [Django security guide](https://docs.djangoproject.com/en/2.1/topics/security/) to see how Django protects you and various security related configs available. 
 
-- Even with ActiveRecord, SQL injection is still possible if misused
+  * Identify various application specific config variables, secret tokens, passwords, credentials etc and store them in a location that exist as long as application is running, or keep them served using any service. For more security, one can have encrypted secrets file, read more about this [here](https://www.google.co.in/search?q=django+encrypted+secrets&oq=django+encrypted+secrets&aqs=chrome..69i57j69i64.5623j0j7&sourceid=chrome&ie=UTF-8) and [here](https://hackernoon.com/4-ways-to-manage-the-configuration-in-python-4623049e841b)
 
-  ```ruby
-  User.group(params[:column])
-  ```
+  * Even with Django's ORM, SQL injection is still possible if misused. [Learn about other methods](https://docs.djangoproject.com/en/2.0/topics/db/sql/#)
 
-  is vulnerable to injection. [Learn about other methods](https://rails-sqli.org)
+  * Don't pass user inputted strings to methods capable of evaluating code. Please read [this](https://docs.python.org/2/library/subprocess.html#frequently-used-arguments) for more details.
 
-- Don’t use standard Ruby interpolation (`#{foo}`) to insert user inputted strings into ActiveRecord or raw SQL queries. Use the `?` character, named bind variables or the [ActiveRecord::Sanitization methods](http://api.rubyonrails.org/classes/ActiveRecord/Sanitization/ClassMethods.html#method-i-sanitize_conditions) to sanitize user input used in DB queries
+  * Below points about XSS are taken from [stackoverflow](https://security.stackexchange.com/a/27807). Credit to [D.W](https://security.stackexchange.com/users/971/d-w):
 
--  Don't pass user inputted strings to methods capable of evaluating code or running O.S. commands such as `eval`, `system`, `syscall`, `%x()`, `open`, `popen<n>`, `File.read`, `File.write`, `send`, `to_sym` and `exec`
+    * Make sure you quote all attributes where dynamic data is inserted. Good: `<img alt="{{foo}}" ...>`. Bad: `<img alt={{foo}} ...>`. Django's auto-escaping isn't sufficient for unquoted attribute values. 
 
-- Sanitize the data/text/html/json that is getting rendered. [Be careful](https://product.reverb.com/2015/08/29/stay-safe-while-using-html_safe-in-rails/) with `html_safe`
+    * For data inserted into CSS (`style` tags and attributes) or Javascript (`script` blocks, event handlers, and `onclick`/etc. attributes), you must manually escape the data using escaping rules that are appropriate for CSS or Javascript. 
 
-- Use `json_escape` when passing variables to JavaScript, or better yet, a library like [Gon](https://github.com/gazay/gon)
+    * For data inserted into an attribute where a URL is expected (e.g., `a href`, `img src`), you must manually validate the URL to make sure it is safe. You need to check the protocol against a whitelist of allowed protocols (e.g., `http:`, `https:`, `mailto:`, `ftp:`, etc. -- but definitely not `javascript:`). 
 
-  ```erb
-  <script>
-    var currentUser = <%= raw json_escape(current_user.to_json) %>;
-  </script>
-  ```
+    * For data inserted inside a comment, you have to do something extra to escape `-s`. Actually, better yet, just don't insert dynamic data inside a HTML comment; that's an obscure corner of HTML that's just asking for subtle problems. (Similarly, don't insert dynamic data into attributes where it is crazy for user input to appear (e.g., `foo class=...`).) 
 
-- Set `autocomplete="off"` for sensitive form fields, like credit card number
+    * You still must avoid client-side XSS (also known as DOM-based XSS) separately; Django doesn't help you with this. YOu could read [Adam Barth's advice on avoiding XSS](http://www.educatedguesswork.org/2011/08/guest_post_adam_barth_on_three.html) for some guidelines that will help you avoid client-side XSS. 
 
-- Make sure sensitive request parameters are not logged
+    * If you use `mark_safe` to manually tell that Django that some data has already been escaped and is safe, you'd better know what you're doing, and it really better be safe. It's easy to make mistakes here if you don't know what you are doing. For example, if you generate HTML programmatically, store it into the database, and later send it back to the client (unescaped, obviously), it's very easy to make mistakes; you're on your own, and the auto-escaping won't help you.   
 
-  ```ruby
-  Rails.application.config.filter_parameters += [:credit_card_number, :password, :username, :login]
-  ```
 
-- Avoid rolling your own authentication unless you know exactly what you are doing. Consider using a gem such as [Devise](https://github.com/plataformatec/devise), [Authlogic](https://github.com/binarylogic/authlogic) or [Clearance](https://github.com/thoughtbot/clearance)
+  * Set `autocomplete="off"` for sensitive form fields, like credit card number 
 
-- Expire the session at log out and expire old sessions at every successful login, consider limiting the number of simultaneous sessions per account
+  * Make sure sensitive request parameters are not logged using Django logger. Read [this](https://docs.djangoproject.com/en/1.11/howto/error-reporting/#filtering-sensitive-information) for more information on how to achieve this
 
-- Log all successful and failed login attempts and password reset attempts (check out [Authtrail](https://github.com/ankane/authtrail) if you use Devise)
+  * Use auth mechanisms provided by Django or Django Rest Framework if applicable. Avoid rolling your own Authentication.
 
-- Implement Captcha or Negative Captcha on publicly exposed forms
+  * Expire the session at log out and expire old sessions at every successful login, consider limiting the number of simultaneous sessions per account 
 
-- Encrypt cookies even if an SSL connection is used. This way, an attacker will not be able to view or modify cookies even if they are intercepted, and the user will not be able to read and edit cookies in the browser
+  * Log all successful and failed login attempts and password reset attempts
 
-- Notify users of password changes, notify users of email address changes - send an email to both the old and new address
+  * Implement Captcha or Negative Captcha on publicly exposed forms 
 
-- Protect sensitive data at rest with a library like [attr_encrypted](https://github.com/attr-encrypted/attr_encrypted) and possibly [KMS Encrypted](https://github.com/ankane/kms_encrypted). Further if necessary, keep rotating the keys/hash/salts used for encryption, keep track of latest encryption algorithms and their implementation libraries 
+  * Encrypt cookies even if an SSL connection is used. This way, an attacker will not be able to view or modify cookies even if they are intercepted, and the user will not be able to read and edit cookies in the browser 
 
-- Don't install development/test-related gems such as [better_errors](https://github.com/charliesome/better_errors) and [web-console](https://github.com/rails/web-console) in the production environment. Place them within a group `:development, :test do block` in the Gemfile. Prevents leakage of exceptions and even REPL access if using better_errors + web-console
+  * Notify users of password changes, notify users of email address changes - send an email to both the old and new address 
 
-- Avoid exposing numerical/sequential record IDs in URLs, form HTML source and APIs. Consider using slugs (A.K.A. friendly IDs, vanity URLs) to identify records instead of numerical IDs, as implemented by the [friendly_id](https://github.com/norman/friendly_id) gem. Additional benefits include SEO and better-looking URLs
+  * Protect sensitive data at rest with a library like [django-encrypted-fields](https://github.com/defrex/django-encrypted-fields). Further if necessary, keep rotating the keys/hash/salts used for encryption, keep track of latest encryption algorithms and their implementation libraries 
 
-- When using slugs instead of numerical IDs for URLs, consider returning a `404 Not Found` status code instead of `403 Forbidden` for authorization errors. Prevents leakage of attribute values used to generate the slugs. For instance, visiting `www.myapp.com/users/john-doe` and getting a `403` return status indicates the application has a user named John Doe.*
+  * Don't install development/test-related apps such as [django-debug-toolbar](https://django-debug-toolbar.readthedocs.io/en/stable/) in the production environment. Keep the availability of such tools configurable so they are only available in DEBUG mode in development environment
 
-- Ask search engines not to index pages with secret tokens in the URL
+  * Avoid exposing numerical/sequential record IDs in URLs, form HTML source and APIs. Consider using slugs (A.K.A. friendly IDs, vanity URLs) to identify records instead of numerical IDs, as given by the [SlugField](https://docs.djangoproject.com/en/2.1/ref/models/fields/#slugfield) by Django’s ORM. Additional benefits include SEO and better-looking URLs 
 
-  ```html
-  <meta name="robots" content="noindex, nofollow">
-  ```
+  * When using slugs instead of numerical IDs for URLs, consider returning a `404 Not Found` status code instead of `403 Forbidden` for authorization errors. Prevents leakage of attribute values used to generate the slugs. For instance, visiting [www.myapp.com/users/john-doe](http://www.myapp.com/users/john-doe) and getting a `403` return status indicates the application has a user named John Doe.
 
-- Ask the browser [not to cache pages](https://stackoverflow.com/a/748646) with sensitive information
+  * Ask search engines not to index pages with secret tokens in the URL 
 
-  ```ruby
-  response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
-  response.headers["Pragma"] = "no-cache"
-  response.headers["Expires"] = "Sat, 01 Jan 2000 00:00:00 GMT"
-  ```
+```html
+<meta name="robots" content="noindex, nofollow">
+```
 
-- Prevent [host header injection](http://carlos.bueno.org/2008/06/host-header-injection.html) - add the following to `config/environments/production.rb`
+  * Ask the browser [not to cache pages](https://stackoverflow.com/a/748646) with sensitive information 
 
-  ```ruby
-  config.action_controller.default_url_options = {host: "www.yoursite.com"}
-  config.action_controller.asset_host = "www.yoursite.com"
-  ```
+```html
+response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+response.headers["Pragma"] = "no-cache"
+response.headers["Expires"] = "Sat, 01 Jan 2000 00:00:00 GMT"
+```
 
-- Use [SecureHeaders](https://github.com/twitter/secureheaders)
+  * Prevent [host header injection](http://carlos.bueno.org/2008/06/host-header-injection.html) - by whitelisting only certain hosts in ALLOWED_HOST setting 
 
-- Protect all data in transit with HTTPS - you can get free SSL certificates from [Let’s Encrypt](https://letsencrypt.org/)
+```python
+ALLOW_HOST = [‘192.168.0.1’, ‘192.168.0.2’]
+```
 
-  Add the following to `config/environments/production.rb`
+  * Use [django-http-security-headers](https://github.com/mazlum/django-http-security-headers)
 
-  ```ruby
-  config.force_ssl = true
-  ```
+  * Protect all data in transit with HTTPS - you can get free SSL certificates from [Let’s Encrypt](https://letsencrypt.org/). Read this for more in
 
-- Add your domain to the [HSTS Preload List](https://hstspreload.org/)
+  * Add your domain to the [HSTS Preload List](https://hstspreload.org/). Enable HSTS. Read [this](https://docs.djangoproject.com/en/1.11/ref/middleware/#http-strict-transport-security) for more info
 
-  ```ruby
-  config.ssl_options = {hsts: {subdomains: true, preload: true, expires: 1.year}}
-  ```
+  * Rate limit login attempts with [django-axes](https://pypi.org/project/django-axes/) or using [Throttling](http://www.django-rest-framework.org/api-guide/throttling/) if using Django Rest Framework. This is to mitigate the risk of brute-force login attempts
 
-- Rate limit login attempts with [Rack Attack](https://github.com/kickstarter/rack-attack)
-
-- You might be a busy person. Security is not a very visible feature in most applications, and so sometimes it’s not a priority. Of course you know it’s important, but how can you fit it into your busy schedule? The answer may be in the power of habits, especially [mini habits](https://www.airpair.com/ruby-on-rails/posts/a-week-with-a-rails-security-strategy)
+  * You might be a busy person. Security is not a very visible feature in most applications, and so sometimes it’s not a priority. Of course you know it’s important, but how can you fit it into your busy schedule? The answer may be in the power of habits, especially [mini habits](https://www.airpair.com/ruby-on-rails/posts/a-week-with-a-rails-security-strategy)
 
 
 
-## Open Source Tools
 
-- [Brakeman](https://github.com/presidentbeef/brakeman) is a great static analysis tool - it scans your code for vulnerabilities, [please check out what all common security issues are covered by brakeman](https://github.com/presidentbeef/brakeman/tree/master/docs/warning_types)
-- [bundler-audit](https://github.com/rubysec/bundler-audit) checks for vulnerable versions of gems
+## Open Source Tools 
 
-  ```sh
-  gem install bundler-audit
-  bundle audit check --update
-  ```
+  * You can use [static analysis tools](https://www.google.co.in/search?q=django+security+analysis+tools&oq=django+security+analysis+tools&aqs=chrome..69i57j69i64.5334j0j4&sourceid=chrome&ie=UTF-8) to uncover security vulnerabilities. 
 
-  To fix `Insecure Source URI` issues with the `github` option, add to the top of your `Gemfile`:
+  * pyupio checks for installed dependencies for known security vulnerabilities
 
-  ```ruby
-  git_source(:github) do |repo_name|
-    repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
-    "https://github.com/#{repo_name}.git"
-  end
-  ```
+```bash
+pip install safety
+safety check
+```
 
-  And run `bundle install`.
+  * [nsp](https://github.com/nodesecurity/nsp) checks for vulnerable versions of JavaScript packages (if you use package.json) 
 
-- [nsp](https://github.com/nodesecurity/nsp) checks for vulnerable versions of JavaScript packages (if you use `package.json`)
-- [git-secrets](https://github.com/awslabs/git-secrets) prevents you from committing sensitive info
+  * [git-secrets](https://github.com/awslabs/git-secrets) prevents you from committing sensitive info 
 
-  ```ruby
-  brew install git-secrets
-  git secrets --register-aws --global
-  git secrets --install
-  git secrets --scan
-  ```
-
-## Mailing Lists
-
-Subscribe to [ruby-security-ann](https://groups.google.com/forum/#!forum/ruby-security-ann) to get security announcements for Ruby, Rails, Rubygems, Bundler, and other Ruby ecosystem projects.
-
-## Services
-
-- [Hakiri](https://hakiri.io/) monitors for dependency and code vulnerabilities
-- [CodeClimate](https://codeclimate.com/) provides a hosted version of static analysis
-- [HackerOne](https://hackerone.com/) allows you to enlist hackers to surface vulnerabilities
-
-## Additional Reading
-
-- [Rails’ Insecure Defaults](https://codeclimate.com/blog/rails-insecure-defaults/)
-- [The Inadequate Guide to Rails Security](https://blog.honeybadger.io/ruby-security-tutorial-and-rails-security-guide/)
-- [The Matasano Crypto Challenges](https://cryptopals.com/)
-- [Web Application Security Zone by Netsparker](https://www.netsparker.com/blog/web-security/)
-- [VERACODE: RUBY ON RAILS SECURITY](https://www.veracode.com/security/ruby-security)
-- [OWASP Top10 2017](https://www.owasp.org/index.php/Category:OWASP_Top_Ten_2017_Project)
-- [zen-rails-security-checklist](https://github.com/amolpujari/zen-rails-security-checklist)
-- [Build Secure Applications](https://blog.sqreen.io/best-practices-build-secure-applications/)
-
+```bash
+brew install git-secrets
+git secrets --register-aws --global
+git secrets --install
+git secrets --scan
+```
